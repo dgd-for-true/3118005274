@@ -1,0 +1,109 @@
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+
+public class test {	
+			//程序入口处
+	public static void main(String[] args) {
+		Scanner sc1 = new Scanner(System.in);
+		
+		String fileName1 = sc1.next();
+		Scanner sc2 = new Scanner(System.in);
+		String fileName2 = sc2.next();		
+		readFileByLines(fileName1,fileName2);
+		}
+
+	public static void readFileByLines(String fileName1,String fileName2) {
+		System.out.print("请输入原文件地址：" );	 
+		System.out.println();
+		File file1=new File(fileName1);
+		System.out.println("请输入待检测文件地址：" );	
+		System.out.println();
+		File file2=new File(fileName2);
+		BufferedReader reader1 = null; //
+		BufferedReader reader2 = null; //
+		InputStream in1=null;
+		InputStream in2=null;
+		try {
+			reader1 = new BufferedReader(new FileReader(file1));//
+			reader2 = new BufferedReader(new FileReader(file2));//
+			String tempString1 = null;
+			String tempString2 = null;
+			int line1=1;
+			int line2=1;		
+			levenshtein(tempString1, tempString2);
+			private static  void levenshtein(String tempString1, String tempString2) {
+				 
+				int len1 = tempString1.length();
+				int len2 = tempString2.length();
+		 
+				int[][] dif = new int[len1 + 1][len2 + 1];
+		 
+				for (int a = 0; a <= len1; a++) {
+					dif[a][0] = a;
+				}
+				for (int a = 0; a <= len2; a++) {
+					dif[0][a] = a;
+				}
+				
+				int temp;
+				for (int i = 1; i <= len1; i++) {
+					for (int j = 1; j <= len2; j++) {
+						if (tempString1.charAt(i - 1) == tempString2.charAt(j - 1)) {
+							temp = 0;
+						} else {
+							temp = 1;
+						}
+						// 取三个值中最小的
+						dif[i][j] = min(dif[i - 1][j - 1] + temp, dif[i][j - 1] + 1,
+								dif[i - 1][j] + 1);
+					}
+				}
+				// 计算相似度
+				float similarity = 1 - (float) dif[len1][len2]
+						/ Math.max(tempString1.length(), tempString2.length());
+				//将保留2位小数后的相似度数据存储在s2中
+				float s2= (float)(Math.round(similarity*100))/100;
+				System.out.println(s2);
+				System.out.println("相似度：" + s2);
+			}
+		 
+			private static int min(int... is) {
+				int min = Integer.MAX_VALUE;
+				for (int i : is) {
+					if (min > i) {
+						min = i;
+					}
+				}
+				return min;
+			}
+		 
+		}
+
+			reader1.close();
+			reader2.close();
+			
+			
+		}catch (IOException e) {
+			e.printStackTrace();
+		}finally {
+			if(reader1 != null) {
+				try {
+					reader1.close();
+					
+				}catch (IOException el) {
+					
+				}
+			}
+		}
+	}
+	
+}
+	
+
+
+
